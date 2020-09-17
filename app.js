@@ -3,13 +3,21 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 
 const keys = require('./config/keys')
+const HttpError = require('./model/http-error')
 const usersRouters = require('./routes/blog-users')
+const postRoutes = require('./routes/blog-post')
 
 const app = express();
 
 app.use(bodyParser.json());
 
+app.use('/api/post', postRoutes)
 app.use('/api/users', usersRouters)
+
+app.use((req, res, next) => {
+    const error = new HttpError('Rota invalida', 404)
+    return next(error)
+})
 
 
 mongoose
